@@ -3,6 +3,8 @@ package APITestFramework;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
+import files.ApiPayLoad;
+import files.ApiResources;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
@@ -18,7 +20,7 @@ import java.util.Properties;
 
 import org.hamcrest.core.Is;
 
-public class FirstTest {
+public class JsonFirstTest {
 	
 	public String placeID;
 	Properties prop;
@@ -60,25 +62,13 @@ public class FirstTest {
   @Test(priority=1)
   public void postTest()
   {
-	  String b="{\n" + 
-	  		"  \"location\": {\n" + 
-	  		"    \"lat\": -33.8669710,\n" + 
-	  		"    \"lng\": 151.1958750\n" + 
-	  		"  },\n" + 
-	  		"  \"accuracy\": 50,\n" + 
-	  		"  \"name\": \"Google Shoes!\",\n" + 
-	  		"  \"phone_number\": \"(02) 9374 4000\",\n" + 
-	  		"  \"address\": \"48 Pirrama Road, Pyrmont, NSW 2009, Australia\",\n" + 
-	  		"  \"types\": [\"shoe_store\"],\n" + 
-	  		"  \"website\": \"http://www.google.com.au/\",\n" + 
-	  		"  \"language\": \"en-AU\"\n" + 
-	  		"}";
+	  
 	  RestAssured.baseURI=prop.getProperty("HOST");
 	  Response res=given().
 	  queryParam("key",prop.getProperty("KEY"))
-	  .body(b)
+	  .body(ApiPayLoad.getAddPlaceBodyJson())
 	  .when()
-	  .post("/maps/api/place/add/json")
+	  .post(ApiResources.addPlaceResJson())
 	  .then().assertThat().statusCode(200).and().contentType(ContentType.JSON)
 	  .and()
 	  .body("status", equalTo("OK"))
@@ -95,14 +85,12 @@ public class FirstTest {
   @Test(priority=2)
   public void deleteTest()
   {
-	  String b="{\n" + 
-	  		"  \"place_id\": \"  "+placeID+"  \"  \n" + 
-	  		"}";
+	  
 	  RestAssured.baseURI=prop.getProperty("HOST");
 	  Response res=given().
 	  queryParam("key",prop.getProperty("KEY"))
-	  .body(b)
-	  .when().post("/maps/api/place/delete/json")
+	  .body(ApiPayLoad.getDeletePlaceBodyJson(placeID))
+	  .when().post(ApiResources.deletePlaceResJson())
 	  .then().assertThat().statusCode(200).and().contentType(ContentType.JSON)
 	  .and()
 	  .body("status", equalTo("OK"))
