@@ -93,6 +93,7 @@ public class XmlFirstTest {
 	  
 	  XmlPath xp=ReusableCode.parseResponseToXml(res);
 		System.out.println(xp.get("PlaceAddResponse.status"));
+		
   }
   
   
